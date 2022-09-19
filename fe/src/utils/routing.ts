@@ -1,4 +1,3 @@
-import { Token } from "graphql";
 import tokens from "../abi/tokens";
 
 export const pools = [
@@ -61,7 +60,6 @@ export const findAllPath = (start: string | undefined) => {
   const pairs = getAllPairName();
   let path: Array<string> = [];
   findPath(start, pairs, path);
-  console.log("P: ", path);
   if (path.length === 1) return [];
   let temp: Array<string> = [];
   path.forEach((p, idx) => {
@@ -97,11 +95,9 @@ export const getAddresses = (names: Array<string>) => {
 export const getRoute = (start: string, end: string) => {
   let routes: Array<Array<string>> = [];
   const allPath = findAllPath(start);
-  console.log("All paths: ", allPath);
   const avaiablePath = allPath.filter(
     (path) => path.includes(start) && path.includes(end)
   );
-  console.log("Avaiable path: ", avaiablePath);
   if (avaiablePath.length === 0) return [];
   avaiablePath.forEach((p) => {
     const startIdx = p.indexOf(start);
@@ -112,6 +108,5 @@ export const getRoute = (start: string, end: string) => {
         : p.slice(endIdx, startIdx + 1);
     routes.push(temp);
   });
-  console.log("All routes: ", routes);
   return routes;
 };

@@ -15,27 +15,19 @@ import SwapButton, { AlertButton } from "./../components/SwapButton";
 import TokenSelect from "./../components/TokenSelect";
 import React, { useContext, useEffect, useState } from "react";
 import theme from "../theme";
-import tokens, { uniswapV2Factory, uniswapV2Router } from "./../abi/tokens";
+import tokens, { uniswapV2Router } from "./../abi/tokens";
 import { useEthers, useTokenAllowance, useTokenBalance } from "@usedapp/core";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { DEADLINE, DECIMALS, SLIPPAGE } from "../constant";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import routerABI from "./../abi/UniswapV2Router.json";
-import factoryABI from "./../abi/UniswapV2Factory.json";
-import pairABI from "./../abi/UniswapV2Pair.json";
 
 import tokenABI from "../abi/Token.json";
-import { useSwapAmountOut } from "../hooks/useSwapAmountOut";
 import { useSwapAmountsOut } from "../hooks/useSwapAmountsOut";
 import SwapDetail from "../components/SwapDetail";
 import { getErrorMessage, notify } from "../utils/notify";
 import AppContext from "../AppContext";
-import {
-  getAddresses,
-  getRoute,
-  getTokenFromName,
-  pools,
-} from "../utils/routing";
+import { getAddresses, getRoute } from "../utils/routing";
 
 declare let window: any;
 export default function Swap() {
@@ -47,36 +39,16 @@ export default function Swap() {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingApproveInToken, setLoadingApproveInToken] = useState(false);
   const [swapAmountIn, setSwapAmountIn] = useState<string | undefined>("");
-  // for get pair address
-  const [pair, setPair] = useState<string | undefined>("");
+  // for get router address
   const [routes, setRoutes] = useState<Array<Array<string>> | undefined>();
   useEffect(() => {
     if (tokenIn && tokenOut) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const factoryContract = new ethers.Contract(
-        uniswapV2Factory,
-        factoryABI,
-        signer
-      );
-      factoryContract
-        .getPair(tokenIn.address, tokenOut.address)
-        .then((result: string) => {
-          console.log(result);
-          setPair(result);
-        })
-        .catch((e: any) => {
-          console.log(e);
-        });
       tokenIn && tokenOut && setRoutes(getRoute(tokenIn.name, tokenOut.name));
     }
   }, [tokenIn, tokenOut]);
 
-  console.log("Routes", routes);
   const balanceInputToken = useTokenBalance(tokenIn?.address, account);
   const balanceOutputToken = useTokenBalance(tokenOut?.address, account);
-  const reserveIn = useTokenBalance(tokenIn?.address, pair);
-  const reserveOut = useTokenBalance(tokenOut?.address, pair);
   const allowanceInToken = useTokenAllowance(
     tokenIn?.address,
     account,
