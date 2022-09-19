@@ -1,9 +1,9 @@
-import { Flex, Link, Text, Box, Divider } from '@chakra-ui/react';
+import { Flex, Link, Text, Box, Divider } from "@chakra-ui/react";
 
 export default function UniMenu() {
   return (
     <Box
-      w="30.62rem"
+      w="50.62rem"
       mx="auto"
       mt="2.25rem"
       borderRadius="1.37rem"
@@ -15,7 +15,7 @@ export default function UniMenu() {
         bg="white"
         borderRadius="0.75rem"
         h="2rem"
-        w="10rem"
+        w="20rem"
         pos="relative"
         top="-5.5rem"
         mb="-5rem"
@@ -26,6 +26,10 @@ export default function UniMenu() {
         <Divider orientation="vertical" />
         <Text fontSize="1xl" p="1rem">
           <Link href="/pool">Pool</Link>
+        </Text>
+        <Divider orientation="vertical" />
+        <Text fontSize="1xl" p="1rem">
+          <Link href="/farm">Farm</Link>
         </Text>
       </Flex>
     </Box>

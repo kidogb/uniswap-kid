@@ -5,6 +5,7 @@ import ConnectButton from "./components/ConnectButton";
 import AccountModal from "./components/Modal/AccountModal";
 import Swap from "./pages/Swap";
 import Pool from "./pages/Pool";
+import Farm from "./pages/Farm";
 import "@fontsource/inter";
 import "./global.css";
 import logo from "./assets/uniswap_logo.svg";
@@ -35,6 +36,7 @@ function App() {
               <Route path="/" element={<Navigate to="/swap" replace />}></Route>
               <Route path="/swap" element={<Swap />}></Route>
               <Route path="/pool" element={<Pool />}></Route>
+              <Route path="/farm" element={<Farm />}></Route>
             </Routes>
           </Router>
         </Flex>

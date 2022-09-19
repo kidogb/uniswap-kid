@@ -1,3 +1,4 @@
+import redis from "../assets/redis.svg";
 export interface Token {
   icon: string;
   name: string;
@@ -40,8 +41,14 @@ const tokens = [
     name: "OP",
     address: "0x7c777135c9293dA683eDAAaAb1fe76aB6d43fB04",
   },
+  {
+    icon: redis,
+    name: "RDX",
+    address: "0x20Cf8d9e653B199965EDb8C063880C8F580118a9",
+  },
 ];
 
+export const masterchef = "0xD191658aC115C9e4cBd423206A20230C004644aE";
 export const uniswapV2Router = "0xc8595f61bE6b5392893a5F7A4c8246b4D7D4860B";
 export const uniswapV2Factory = "0xc9DD0991021b874f7F68e3e7ef762Ae43917bB1d";
 export default tokens;
