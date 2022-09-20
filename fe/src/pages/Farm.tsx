@@ -57,7 +57,7 @@ export default function Farm() {
           </Flex>
         </Box>
         <Divider />
-        <FarmDetail token={tokens[2]} reward={tokens[6]} pid={0} />
+        <FarmDetail token={tokens[2]} reward={tokens[6]} pid={0} allocPoint={1}/>
       </Box>
     </Box>
   );

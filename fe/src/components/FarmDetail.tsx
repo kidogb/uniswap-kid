@@ -12,26 +12,28 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEthers, useTokenAllowance, useTokenBalance } from "@usedapp/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { useState } from "react";
 import { masterchef, Token } from "../abi/tokens";
 import tokenABI from "../abi/Token.json";
 import masterchefABI from "../abi/Masterchef.json";
-import { DECIMALS } from "../constant";
+import { DECIMALS, RDX_PER_BLOCK } from "../constant";
 import theme from "../theme";
 import { getErrorMessage, notify } from "../utils/notify";
 import { useUserInfo } from "../hooks/useUserInfo";
 import { usePendingReward } from "../hooks/usePendingReward";
+import { useTotalAllocPoint } from "../hooks/useTotalAllocPoint";
 
 type Props = {
   token: Token;
   reward: Token;
   pid: number;
+  allocPoint: number;
 };
 declare let window: any;
 
-export default function FarmDetail({ token, reward, pid }: Props) {
+export default function FarmDetail({ token, reward, pid, allocPoint }: Props) {
   const toast = useToast();
   const { account } = useEthers();
   const [expand, setExpand] = useState<boolean>(false);
@@ -43,6 +45,11 @@ export default function FarmDetail({ token, reward, pid }: Props) {
   const [loadingWithdraw, setLoadingWithdraw] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
   const [loadingClaimAll, setLoadingClaimAll] = useState(false);
+
+  const totalAllocPoint = useTotalAllocPoint(
+    masterchef,
+    new ethers.utils.Interface(masterchefABI)
+  );
 
   const lpTokenBalance = useTokenBalance(token.address, account);
   const totalDeposited = useTokenBalance(token.address, masterchef);
@@ -59,12 +66,28 @@ export default function FarmDetail({ token, reward, pid }: Props) {
     pid,
     account
   );
-
   const allowanceLpToken = useTokenAllowance(
     token.address,
     account,
     masterchef
   );
+
+  // estimate apr, asume 1 min has 5 blocks
+  const weightPool =
+    totalAllocPoint &&
+    parseUnits(allocPoint + "", DECIMALS).div(totalAllocPoint);
+  const rewardPerDay =
+    weightPool &&
+    parseFloat(formatUnits(weightPool, DECIMALS)) *
+      RDX_PER_BLOCK *
+      5 * // blocks per min
+      60 * // 60 minutes per hour
+      24; // 24 hours per day
+  const rewardPerYear = rewardPerDay && rewardPerDay * 365;
+  const apr =
+    totalDeposited &&
+    rewardPerYear &&
+    (rewardPerYear * 100) / parseFloat(formatUnits(totalDeposited, DECIMALS)); //%
 
   const onChangeDeposit = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDepositAmount(e.target.value);
@@ -254,8 +277,8 @@ export default function FarmDetail({ token, reward, pid }: Props) {
               <Text px="1rem" as="b">
                 {`${reward.name}/${token.name}`.toUpperCase()}
               </Text>
-              <Text p="0.2rem" as="sup">
-                {`Earn - per day`}
+              <Text noOfLines={1} p="0.5rem" as="sup">
+                {`${rewardPerDay} per day`}
               </Text>
             </VStack>
           </Flex>
@@ -277,7 +300,7 @@ export default function FarmDetail({ token, reward, pid }: Props) {
 
         <Box w="20%">
           <Flex p="1rem" w="100%" align="center">
-            <Text>12,641,864%</Text>
+            <Text>{apr?.toLocaleString()}%</Text>
           </Flex>
         </Box>
         {expand ? (
