@@ -1,7 +1,7 @@
-import { Button, Box } from '@chakra-ui/react';
-import theme from './../theme';
+import { Button, Box } from "@chakra-ui/react";
+import theme from "./../theme";
 
-import { Goerli, useEthers } from '@usedapp/core';
+import { Goerli, useEthers } from "@usedapp/core";
 
 interface Props {
   onSwap: () => void;
@@ -31,11 +31,13 @@ export function AlertButton({ text }: AlertButtonProps) {
 }
 
 export default function SwapButton({ onSwap, loadingSwap }: Props) {
-  const { activateBrowserWallet, account, chainId } = useEthers();
+  const { activateBrowserWallet, account, chainId, switchNetwork } =
+    useEthers();
 
   async function handleConnectWallet() {
     try {
       activateBrowserWallet();
+      switchNetwork(Goerli.chainId);
     } catch (err) {
       console.log(err);
     }
@@ -61,7 +63,7 @@ export default function SwapButton({ onSwap, loadingSwap }: Props) {
   ) : account ? (
     <Button
       size="lg"
-      color={'blackAlpha.900'}
+      color={"blackAlpha.900"}
       bg={theme.colors.gray_light}
       width="100%"
       p="1.62rem"

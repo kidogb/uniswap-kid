@@ -1,11 +1,11 @@
-import { Button, Box, Text, Flex, Image } from '@chakra-ui/react';
-import { useEthers, useEtherBalance } from '@usedapp/core';
-import { formatEther } from '@ethersproject/units';
-import Identicon from './Identicon';
-import theme from './../theme';
-import { Goerli } from '@usedapp/core';
-import { useContext, useEffect } from 'react';
-import AppContext from './../AppContext';
+import { Button, Box, Text, Flex, Image } from "@chakra-ui/react";
+import { useEthers, useEtherBalance } from "@usedapp/core";
+import { formatEther } from "@ethersproject/units";
+import Identicon from "./Identicon";
+import theme from "./../theme";
+import { Goerli } from "@usedapp/core";
+import { useContext, useEffect } from "react";
+import AppContext from "./../AppContext";
 
 type Props = {
   handleOpenModal: any;
@@ -13,7 +13,8 @@ type Props = {
 
 export default function ConnectButton({ handleOpenModal }: Props) {
   const context = useContext(AppContext);
-  const { activateBrowserWallet, chainId, account } = useEthers();
+  const { activateBrowserWallet, chainId, account, switchNetwork } =
+    useEthers();
   const etherBalance = useEtherBalance(account);
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function ConnectButton({ handleOpenModal }: Props) {
   async function handleConnectWallet() {
     try {
       activateBrowserWallet();
+      switchNetwork(Goerli.chainId);
     } catch (err) {
       console.log(err);
     }
@@ -52,8 +54,8 @@ export default function ConnectButton({ handleOpenModal }: Props) {
         bg={theme.colors.pink_light}
         border="0.06rem solid transparent"
         _hover={{
-          border: '0.06rem',
-          borderStyle: 'solid',
+          border: "0.06rem",
+          borderStyle: "solid",
           borderColor: theme.colors.pink_light_hover,
         }}
         borderRadius="xl"
